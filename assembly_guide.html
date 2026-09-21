@@ -293,10 +293,22 @@
           <td>정면 조도 감지 (ESP32 보조 하드웨어 I2C)</td>
         </tr>
         <tr>
-          <td>0.96인치 I2C OLED</td>
+          <td>0.96인치 OLED #1 (조도용)</td>
           <td>SDA / SCL</td>
           <td><span class="badge badge-sig">GPIO 21 / 22 (Wire)</span></td>
-          <td>상태 표시 화면 (0x3C 주소, 기존 핀 공유)</td>
+          <td>조도 및 로봇 주행 상태 표시 (0x3C)</td>
+        </tr>
+        <tr>
+          <td>0.96인치 OLED #2 (습도용)</td>
+          <td>SDA / SCL</td>
+          <td><span class="badge badge-sig">GPIO 18 / 19 (Wire1)</span></td>
+          <td>토양 습도 및 대기 온습도 표시 (0x3C)</td>
+        </tr>
+        <tr>
+          <td>토양 수분/습도 센서</td>
+          <td>AOUT (또는 DATA)</td>
+          <td><span class="badge badge-sig">GPIO 35 (ADC1)</span></td>
+          <td>화분 흙 수분 측정 (부식방지 정전용량식 권장)</td>
         </tr>
         <tr>
           <td>LM2596 출력</td>
