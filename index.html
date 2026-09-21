@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스마트 화분 받침대(Helios) 조립 설계도 및 가이드</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px 16px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 32px; }
+    header h1 { font-size: 26px; color: #0f172a; margin-bottom: 8px; }
+    header p { color: #64748b; font-size: 15px; }
+
+    .section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .section h2 {
+      font-size: 18px;
+      border-left: 4px solid var(--primary);
+      padding-left: 12px;
+      margin-bottom: 16px;
+      color: #0f172a;
+    }
+
+    /* Diagram Area */
+    .diagram-wrap {
+      display: flex;
+      justify-content: center;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+    svg { max-width: 100%; height: auto; }
+
+    /* Steps */
+    .step-list { list-style: none; counter-reset: step-counter; }
+    .step-item {
+      position: relative;
+      padding-left: 44px;
+      margin-bottom: 20px;
+    }
+    .step-item::before {
+      counter-increment: step-counter;
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .step-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+    .step-desc { font-size: 14px; color: #475569; }
+    .step-warn {
+      margin-top: 6px;
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      color: #b45309;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    /* Tools & Wiring Table */
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; font-weight: 600; color: #334155; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-pwr { background: #fee2e2; color: #b91c1c; }
+    .badge-sig { background: #dbeafe; color: #1d4ed8; }
+    .badge-gnd { background: #e2e8f0; color: #475569; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>스마트 화분 받침대(Helios) 조립 설계도</h1>
+    <p>5kg 적재 조도 트래킹 및 USB-C PD 충전 2단 주행 로봇 플랫폼 (PoC)</p>
+  </header>
+
+  <!-- 1. 구조 설계도 (SVG) -->
+  <section class="section">
+    <h2>1. 2단 섀시 구조 분해도 (250mm 원형)</h2>
+    <div class="diagram-wrap">
+      <svg width="760" height="360" viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background grid -->
+        <rect width="760" height="360" fill="#f8fafc" rx="8" />
+
+        <!-- [상판: 2단] -->
+        <g transform="translate(40, 30)">
+          <!-- Top Plate Body -->
+          <ellipse cx="140" cy="80" rx="130" ry="60" fill="#bae6fd" stroke="#0284c7" stroke-width="2" stroke-dasharray="2,2"/>
+          <!-- Pot Area -->
+          <ellipse cx="140" cy="80" rx="75" ry="35" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+          <text x="140" y="85" text-anchor="middle" font-size="12" font-weight="bold" fill="#0369a1">화분 적재 구역 (5kg)</text>
+          
+          <!-- Sensors on Top Plate -->
+          <!-- BH1750 Left -->
+          <rect x="35" y="55" width="22" height="16" rx="3" fill="#f59e0b" stroke="#d97706"/>
+          <text x="46" y="67" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">L조도</text>
+          
+          <!-- HC-SR04 & Center BH1750 -->
+          <rect x="126" y="20" width="28" height="16" rx="3" fill="#10b981" stroke="#059669"/>
+          <text x="140" y="32" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">C조도</text>
+          <rect x="115" y="3" width="50" height="15" rx="3" fill="#6366f1" stroke="#4f46e5"/>
+          <text x="140" y="14" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">초음파</text>
+
+          <!-- BH1750 Right -->
+          <rect x="225" y="55" width="22" height="16" rx="3" fill="#f59e0b" stroke="#d97706"/>
+          <text x="236" y="67" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">R조도</text>
+
+          <!-- ESP32 Module -->
+          <rect x="120" y="105" width="40" height="24" rx="3" fill="#3b82f6" stroke="#1d4ed8"/>
+          <text x="140" y="120" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">ESP32</text>
+          
+          <text x="140" y="155" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">[상판] 센서 및 메인제어부</text>
+        </g>
+
+        <!-- Standoffs (Pillars) -->
+        <g stroke="#64748b" stroke-width="3" stroke-dasharray="4,4">
+          <line x1="100" y1="180" x2="100" y2="230"/>
+          <line x1="260" y1="180" x2="260" y2="230"/>
+        </g>
+        <text x="180" y="210" text-anchor="middle" font-size="11" fill="#64748b">M3 50mm 서포트 기둥 4개</text>
+
+        <!-- [하판: 1단] -->
+        <g transform="translate(420, 30)">
+          <!-- Bottom Plate Body -->
+          <ellipse cx="140" cy="80" rx="130" ry="60" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+          
+          <!-- Front Caster -->
+          <circle cx="140" cy="30" r="12" fill="#94a3b8" stroke="#475569"/>
+          <text x="140" y="34" text-anchor="middle" font-size="8" fill="#fff" font-weight="bold">전방캐스터</text>
+
+          <!-- Rear Caster -->
+          <circle cx="140" cy="130" r="12" fill="#94a3b8" stroke="#475569"/>
+          <text x="140" y="134" text-anchor="middle" font-size="8" fill="#fff" font-weight="bold">후방캐스터</text>
+
+          <!-- Left Motor & Wheel -->
+          <rect x="2" y="65" width="28" height="30" rx="4" fill="#334155"/>
+          <text x="16" y="83" text-anchor="middle" font-size="8" fill="#fff">좌측휠</text>
+
+          <!-- Right Motor & Wheel -->
+          <rect x="250" y="65" width="28" height="30" rx="4" fill="#334155"/>
+          <text x="264" y="83" text-anchor="middle" font-size="8" fill="#fff">우측휠</text>
+
+          <!-- Internal Modules -->
+          <!-- 3S Battery -->
+          <rect x="90" y="55" width="45" height="35" rx="3" fill="#10b981" stroke="#059669"/>
+          <text x="112" y="75" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">3S배터리</text>
+
+          <!-- Type-C Charger -->
+          <rect x="50" y="95" width="40" height="20" rx="3" fill="#f97316"/>
+          <text x="70" y="108" text-anchor="middle" font-size="8" fill="#fff" font-weight="bold">Type-C충전</text>
+
+          <!-- LM2596 Step-Down -->
+          <rect x="145" y="95" width="40" height="20" rx="3" fill="#8b5cf6"/>
+          <text x="165" y="108" text-anchor="middle" font-size="8" fill="#fff" font-weight="bold">LM2596(5V)</text>
+
+          <!-- L298N Driver -->
+          <rect x="145" y="55" width="45" height="35" rx="3" fill="#ef4444"/>
+          <text x="167" y="75" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">L298N</text>
+
+          <text x="140" y="155" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">[하판] 구동부 및 전원공급부</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 2. 조립 순서 -->
+  <section class="section">
+    <h2>2. 단계별 조립 가이드</h2>
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-title">하판 구동부 조립 (모터 & 바퀴 & 캐스터)</div>
+        <div class="step-desc">
+          하판 바닥면에 JGB37 금속 브라켓을 3M 테이프로 단단히 고정하고 모터 2개를 장착합니다. 65mm 러버휠을 결합한 뒤, 앞뒤 중심부에 15mm 볼캐스터를 각각 장착하여 수평 4점 지지를 완성합니다.
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-title">전원 전압 사전 세팅 (필수 안전 단계)</div>
+        <div class="step-desc">
+          3S 배터리(11.1V)를 LM2596 입력단에 임시 연결하고, <b>멀티미터로 출력 전압을 측정하며 가변저항 나사를 돌려 정확히 5.0V</b>로 맞춥니다.
+        </div>
+        <div class="step-warn">
+          주의: 5V 세팅을 건너뛰고 ESP32에 직결하면 보드가 영구 파손되므로 조립 전 반드시 사전 조절하십시오.
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-title">하판 전원 및 모터 드라이버 모듈 배치</div>
+        <div class="step-desc">
+          하판 윗면에 3S 배터리 홀더, Type-C 3S 충전모듈, L298N 드라이버, 세팅된 LM2596을 양면테이프로 부착하고 전원선을 병렬 납땜 또는 단자대에 체결합니다.
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-title">서포트 기둥 체결 및 상판 결합</div>
+        <div class="step-desc">
+          하판의 4개 코너에 M3 50mm 황동 서포트 기둥을 세우고 상판 아크릴을 얹어 볼트로 체결합니다. (배선이 통과할 여유 공간 확보)
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-title">상판 센서 & ESP32 배선 연결</div>
+        <div class="step-desc">
+          상판 둘레에 BH1750 조도센서 3개(좌측 45°, 정면, 우측 45°)와 정면 초음파 센서를 고정합니다. ESP32 보드를 중앙에 부착하고 점퍼선으로 하판의 모터드라이버 및 5V 전원과 연결합니다.
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-title">펌웨어 플래싱 및 동작 검증</div>
+        <div class="step-desc">
+          ESP32를 PC에 USB-C로 연결해 <code>helios.ino</code>를 업로드합니다. Wi-Fi AP(<code>Helios-Planter</code>)에 접속하여 모터 주행, 조도 반응, 전방 장애물 회피를 확인합니다.
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 3. 전원 및 핀 결선도 -->
+  <section class="section">
+    <h2>3. 핀 결선표 (Wiring Table)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>장치 / 모듈</th>
+          <th>핀 이름</th>
+          <th>ESP32 / 전원 연결처</th>
+          <th>역할 / 비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>L298N 드라이버</td>
+          <td>IN1 / IN2 / ENA</td>
+          <td><span class="badge badge-sig">GPIO 25 / 26 / 27</span></td>
+          <td>좌측 모터 방향 및 PWM 속도 제어</td>
+        </tr>
+        <tr>
+          <td>L298N 드라이버</td>
+          <td>IN3 / IN4 / ENB</td>
+          <td><span class="badge badge-sig">GPIO 32 / 33 / 14</span></td>
+          <td>우측 모터 방향 및 PWM 속도 제어</td>
+        </tr>
+        <tr>
+          <td>HC-SR04 초음파</td>
+          <td>TRIG / ECHO</td>
+          <td><span class="badge badge-sig">GPIO 5 / 17</span></td>
+          <td>전방 장애물(가구/벽) 20cm 감지</td>
+        </tr>
+        <tr>
+          <td>BH1750 (좌 / 우)</td>
+          <td>SDA / SCL</td>
+          <td><span class="badge badge-sig">GPIO 21 / 22 (Wire)</span></td>
+          <td>좌측(ADDR=GND: 0x23), 우측(ADDR=VCC: 0x5C)</td>
+        </tr>
+        <tr>
+          <td>BH1750 (정면)</td>
+          <td>SDA / SCL</td>
+          <td><span class="badge badge-sig">GPIO 18 / 19 (Wire1)</span></td>
+          <td>정면 조도 감지 (ESP32 보조 하드웨어 I2C)</td>
+        </tr>
+        <tr>
+          <td>LM2596 출력</td>
+          <td>OUT+ / OUT-</td>
+          <td><span class="badge badge-pwr">ESP32 5V / GND</span></td>
+          <td>안정화된 로직 5.0V 전원 공급</td>
+        </tr>
+        <tr>
+          <td>Type-C 충전모듈</td>
+          <td>B+ / B-</td>
+          <td><span class="badge badge-pwr">3S 배터리팩 (+ / -)</span></td>
+          <td>스마트폰 C타입 PD 충전기 직결 충전</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4. 준비 공구 -->
+  <section class="section">
+    <h2>4. 준비 공구 체크리스트</h2>
+    <table>
+      <thead>
+        <tr><th>공구명</th><th>용도</th><th>비고</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>정밀 십자드라이버</td><td>모터 브라켓 및 M3 서포트 볼트 체결</td><td>PH0 / PH1 규격 권장</td></tr>
+        <tr><td>소형 인두기 / 실납</td><td>모터 단자 및 배터리 홀더 전원선 결선</td><td>무연납 권장</td></tr>
+        <tr><td>디지털 멀티미터</td><td>LM2596 가변저항 5.0V 출력 사전 교정</td><td>필수 보유</td></tr>
+        <tr><td>와이어 스트리퍼 / 니퍼</td><td>전원선 및 점퍼선 피복 탈피</td><td>다이소 소형 가능</td></tr>
+        <tr><td>3M 초강력 폼테이프(VHB)</td><td>센서, 드라이버, 배터리 홀더 무타공 부착</td><td>아크릴 타공 불필요</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+</body>
+</html>
